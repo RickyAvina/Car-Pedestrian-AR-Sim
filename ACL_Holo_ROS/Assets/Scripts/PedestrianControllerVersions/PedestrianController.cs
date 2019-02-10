@@ -27,8 +27,6 @@ public class PedestrianController : MonoBehaviour
     public float speed_multiplier = 0.5f;
     [Tooltip("The base speed of your pedestrian animation")]
     public float base_speed = 1.6f;
-    //[Tooltip("The prefab for the origin")]
-    //public GameObject Origin;
 
     private string serverURL = "ws://192.168.0.19:9090";    // reference to the ROS Connector url
     private PoseStates poseState = PoseStates.NotReady;     // Keeps track of the state of the incoming poses

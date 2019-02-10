@@ -240,6 +240,11 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5cfba9d7fc695ef4d9690b8f2242eb28, type: 2}
   m_IsPrefabAsset: 0
+--- !u!4 &269452940 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4918150098425000, guid: 5cfba9d7fc695ef4d9690b8f2242eb28,
+    type: 2}
+  m_PrefabInternal: {fileID: 269452939}
 --- !u!1 &956475688 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1000011021619270, guid: d379ed0a5618c9f479f58bd83a2d0ad3,
@@ -310,7 +315,7 @@ Prefab:
     - target: {fileID: 114131602036208720, guid: 32f631e32f02d024781986de6f0a8d90,
         type: 2}
       propertyPath: RosBridgeServerUrl
-      value: ws://18.47.1.81:9090
+      value: ws://18.47.5.113:9090
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114260671039870792, guid: 32f631e32f02d024781986de6f0a8d90, type: 2}
@@ -477,7 +482,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Topic: hololens_pose
   PublishedTransform: {fileID: 956475694}
-  ancManager: {fileID: 1963211877}
+  Origin: {fileID: 269452940}
   FrameId: world
 --- !u!114 &1573229067
 MonoBehaviour:
@@ -487,7 +492,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1573229065}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e24370ebac9681845ae4980c546dbe0c, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e0e7c262b1e9fc4ebf8e51d97871148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pedestrianPrefab: {fileID: 1512619151511956, guid: 08af09d707712504bac6a51afe9f6899,
@@ -495,6 +500,7 @@ MonoBehaviour:
   ancManager: {fileID: 1963211877}
   speed_multiplier: 0.5
   base_speed: 1.6
+  speechController: {fileID: 0}
 --- !u!1 &1797731441
 GameObject:
   m_ObjectHideFlags: 0

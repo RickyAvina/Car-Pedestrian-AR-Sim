@@ -9,7 +9,7 @@ using Debug = UnityEngine.Debug;
 // This file acts as the bridge between ROS communication and pedestrian behavior.
 // This is achieved through Callbacks from ROS. Complile with /doc to search for XML documentation.
 // </Summary>
-public class PedestrianController_EditorOnly : MonoBehaviour
+public class PedestrianController_Demo : MonoBehaviour
 {
     public enum PoseStates
     {
@@ -21,17 +21,21 @@ public class PedestrianController_EditorOnly : MonoBehaviour
 
     [Tooltip("The prefab for the pedestrian")]
     public GameObject pedestrianPrefab;
-    [Tooltip("Your ROS uri with the port 9090 (used by websocket)")]
-    private string serverURL = "ws://192.168.0.19:9090";
-
+    [Tooltip("The AncManager script attached to your origin prefab")]
+    public AncManager ancManager;
     [Tooltip("The speed modifier for your pedestrian animation")]
     public float speed_multiplier = 0.5f;
     [Tooltip("The base speed of your pedestrian animation")]
     public float base_speed = 1.6f;
+    //[Tooltip("The prefab for the origin")]
+    //public GameObject Origin;
 
+    private string serverURL = "ws://192.168.0.19:9090";    // reference to the ROS Connector url
     private PoseStates poseState = PoseStates.NotReady;     // Keeps track of the state of the incoming poses
+    private bool mappingFinished = true;                   // Keeps track of spatial mapping finished callback
     private bool rosReady = false;                          // ROS Connectivity callback indicator
     private bool firstSignal = true;                        // used for determining if pose status is being recieved for the first time
+    private bool originSet = true;                         // keeps track of when the origin has been set so pedestrians can spawn
     private RosConnector rosConnector;                      // RosConnector has a RosSocket which handles all the networking between Linux and Hololens systems
     private List<Pedestrian> pedestrians;                   // A List containing every Pedestrian object which includes the GameObject and all of its data
     private bool pedestriansCreated = false;                // Keeps track if the pedestrians have been created
@@ -60,6 +64,32 @@ public class PedestrianController_EditorOnly : MonoBehaviour
     }
 
     // <Summary>
+    // Called whenever the user says "start" to indicate they are satisfied with the position of the origin
+    // </Summary>
+    private void OnOriginSet(object o, EventArgs e)
+    {
+        originSet = true;
+        ancManager.Hide();  // disable Origin Cube properties and hide it
+        Debug.Log("Origin Set [PedestrianController]");
+    }
+
+    // <Summary>
+    // Called whenever the user says "ready" to indicate they are satisfied with the spatial mapping
+    // </Summary>
+    private void OnMappingFinished(object o, EventArgs e) 
+    {
+        if (ancManager == null)
+        {
+            Debug.LogError("ancManager not set!");
+            return;
+        }
+
+        mappingFinished = true;
+        ancManager.Ready();
+        Debug.Log("MappingFinished");
+    }
+
+    // <Summary>
     // GameObjects of the pedestrian prefab are instantiated here and given the values loaded at the 
     // HandlePosesUpdated callback function
     // </Summary>
@@ -69,14 +99,13 @@ public class PedestrianController_EditorOnly : MonoBehaviour
         {
             pedestrians[i].obj = Instantiate(pedestrianPrefab);
             pedestrians[i].obj.transform.localScale = new Vector3(pedestrians[i].radius, pedestrians[i].radius, pedestrians[i].radius);
-            //pedestrians[i].obj.transform.Find("Disk").transform.localScale = new Vector3(pedestrians[i].radius, 0.2f, pedestrians[i].radius);
-            pedestrians[i].obj.transform.position = pedestrians[i].pose.position;   // this position is relative to the origin
+            pedestrians[i].obj.transform.position = pedestrians[i].pose.position+ancManager.Origin.transform.position;   // this position is relative to the origin
             pedestrians[i].obj.transform.rotation = pedestrians[i].pose.rotation;
 
             if (pedestrians[i].agentType == AgentType.PEDESTRIAN)
             {
-               // pedestrians[i].m_Animator = pedestrians[i].obj.GetComponent<Animator>();
-               // pedestrians[i].m_Animator.speed = base_speed + pedestrians[i].speed * speed_multiplier;     // make the animation speed relative to the speed of the pedestrian
+                pedestrians[i].m_Animator = pedestrians[i].obj.GetComponent<Animator>();
+                pedestrians[i].m_Animator.speed = base_speed + pedestrians[i].speed * speed_multiplier;     // make the animation speed relative to the speed of the pedestrian
             }
         }
 
@@ -94,7 +123,7 @@ public class PedestrianController_EditorOnly : MonoBehaviour
         {
             for (int i = 0; i < numPedestrians; i++)
             {
-                pedestrians[i].obj.transform.position = pedestrians[i].pose.position;
+                pedestrians[i].obj.transform.position = pedestrians[i].pose.position+ancManager.Origin.transform.position;  // move pedestrians relative to the origin
                 pedestrians[i].obj.transform.rotation = pedestrians[i].pose.rotation;
             }
         }
@@ -107,9 +136,9 @@ public class PedestrianController_EditorOnly : MonoBehaviour
     // </summary>
     private void HandlePosesUpdated(SyntheticPeds message)
     {
-        if (rosReady)     // don't start creating peds until mapping is finished and ROS connected
+        if (rosReady & mappingFinished & originSet)     // don't start creating peds until mapping is finished, origin has been set, and ROS connected
         {
-            if (firstSignal)
+            if (firstSignal)    // These are seperated because we don't want to update every value of pedestrian at every iteration
             {
                 firstSignal = false;
                 numPedestrians = message.poses.Count;
@@ -121,11 +150,10 @@ public class PedestrianController_EditorOnly : MonoBehaviour
 
                 Debug.Log("First pose aquired");
             }
-            else 
+            else
             {
                 for (int i = 0; i < numPedestrians; i++)    // update values of all pedestrians
                 {
-                    pedestrians[i].id = message.ids[i];
                     pedestrians[i].pose = message.poses[i];
                     pedestrians[i].velocity = message.velocities[i];
                     pedestrians[i].goalPosition = message.goal_positions[i];

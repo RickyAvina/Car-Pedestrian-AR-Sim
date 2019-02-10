@@ -157,6 +157,10 @@ Prefab:
       propertyPath: Cursor
       value: 
       objectReference: {fileID: 1548220218}
+    - target: {fileID: 1000011070707148, guid: 3eddd1c29199313478dd3f912bfab2ab, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3eddd1c29199313478dd3f912bfab2ab, type: 2}
   m_IsPrefabAsset: 0
@@ -328,6 +332,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1000011021619270, guid: d379ed0a5618c9f479f58bd83a2d0ad3, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d379ed0a5618c9f479f58bd83a2d0ad3, type: 2}
   m_IsPrefabAsset: 0
@@ -397,7 +405,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Topic: hololens_pose
   PublishedTransform: {fileID: 956475694}
-  FrameId: world
+  Origin: {fileID: 956475694}
+  FrameId: unity_world
 --- !u!114 &1573229067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,7 +418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5feb21ebb25baf41a506c04eba2bcb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pedestrianPrefab: {fileID: 1512619151511956, guid: 08af09d707712504bac6a51afe9f6899,
+  pedestrianPrefab: {fileID: 1899234095489288, guid: 5434095a5434c2d4486895a6157036ad,
     type: 2}
   speed_multiplier: 0.5
   base_speed: 1.6

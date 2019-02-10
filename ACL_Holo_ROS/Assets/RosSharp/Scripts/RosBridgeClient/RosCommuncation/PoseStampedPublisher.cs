@@ -20,6 +20,9 @@ namespace RosSharp.RosBridgeClient
     public class PoseStampedPublisher : Publisher<Messages.Geometry.PoseStamped>
     {
         public Transform PublishedTransform;
+        public Transform Origin;
+        private Transform relPos;
+
         public string FrameId = "world";
 
         private Messages.Geometry.PoseStamped message;
@@ -28,6 +31,9 @@ namespace RosSharp.RosBridgeClient
         {
             base.Start();
             InitializeMessage();
+
+            GameObject go = new GameObject();
+            relPos = go.transform;
         }
 
         private void FixedUpdate()
@@ -49,7 +55,9 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            message.pose.position = GetGeometryPoint(PublishedTransform.position.Unity2Ros());
+            relPos.position = PublishedTransform.InverseTransformPoint(Origin.position);
+
+            message.pose.position = GetGeometryPoint(relPos.position.Unity2Ros());
             message.pose.orientation = GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros());
 
             Publish(message);
@@ -73,6 +81,5 @@ namespace RosSharp.RosBridgeClient
             geometryQuaternion.w = quaternion.w;
             return geometryQuaternion;
         }
-
     }
 }
