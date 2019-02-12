@@ -13,6 +13,8 @@ namespace HoloToolkit.Unity.InputModule
     /// </summary>
     public class HandDraggable : MonoBehaviour, IFocusable, IInputHandler, ISourceStateHandler
     {
+
+        public GameObject origin;
         /// <summary>
         /// Event triggered when dragging starts.
         /// </summary>
@@ -97,6 +99,16 @@ namespace HoloToolkit.Unity.InputModule
             }
         }
 
+        private void RemoveWorldAnchor()
+        {
+            if (WorldAnchorManager.Instance != null)
+            {
+                Debug.Log("Removing world anchor [HandDraggable]");
+                //Removes existing world anchor if any exist.
+                WorldAnchorManager.Instance.RemoveAnchor(origin); 
+            }
+        }
+
         /// <summary>
         /// Starts dragging the object.
         /// </summary>
@@ -111,6 +123,8 @@ namespace HoloToolkit.Unity.InputModule
             {
                 return;
             }
+
+            RemoveWorldAnchor();
 
             // TODO: robertes: Fix push/pop and single-handler model so that multiple HandDraggable components
             //       can be active at once.
