@@ -23,7 +23,7 @@ namespace RosSharp.RosBridgeClient
         public Transform Origin;
         private Transform relPos;
 
-        public string FrameId = "world";
+        public string FrameId = "unity_world";
 
         private Messages.Geometry.PoseStamped message;
 
@@ -31,9 +31,6 @@ namespace RosSharp.RosBridgeClient
         {
             base.Start();
             InitializeMessage();
-
-            GameObject go = new GameObject();
-            relPos = go.transform;
         }
 
         private void FixedUpdate()
@@ -55,7 +52,7 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            relPos.position = PublishedTransform.InverseTransformPoint(Origin.position);
+            relPos.position = new Vector3(PublishedTransform.position.x - Origin.position.x, PublishedTransform.position.z - Origin.position.z, PublishedTransform.position.y);
 
             message.pose.position = GetGeometryPoint(relPos.position.Unity2Ros());
             message.pose.orientation = GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros());

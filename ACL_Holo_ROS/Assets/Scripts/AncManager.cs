@@ -81,15 +81,29 @@ public class AncManager : MonoBehaviour {
     {
         Origin.GetComponent<MeshRenderer>().enabled = false;    // hide the origin
         Origin.GetComponent<BoxCollider>().enabled = false;     // disable the collider
+        Origin.GetComponent<BoundingBoxRig>().Deactivate();
+        Origin.GetComponent<BoundingBoxRig>().appBarInstance.enabled = false;   // hide app bar
+        Origin.GetComponent<HandDraggable>().enabled = false;
 
+        foreach (Transform child in transform)
+        {
+            child.GetComponent<MeshRenderer>().enabled = false; // hide all of the axis
+        }
     }
 
     public void Show()
     {
         Origin.GetComponent<MeshRenderer>().enabled = true;    // hide the origin
         Origin.GetComponent<BoxCollider>().enabled = true;     // disable the collider
-        Origin.GetComponent<BoundingBoxRig>().enabled = true;
+        Origin.GetComponent<BoundingBoxRig>().appBarInstance.enabled = false;   // show app bar. Has been proven to work with false here too
+        Origin.GetComponent<BoundingBoxRig>().Activate();
         Origin.GetComponent<HandDraggable>().enabled = true;
+
+
+        foreach (Transform child in transform)
+        {
+            child.GetComponent<MeshRenderer>().enabled = true; // hide all of the axis
+        }
     }
 
     // Update is called once per frame

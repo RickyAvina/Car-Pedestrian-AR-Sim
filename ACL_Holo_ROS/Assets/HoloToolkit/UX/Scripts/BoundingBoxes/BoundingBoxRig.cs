@@ -193,7 +193,7 @@ namespace HoloToolkit.Unity.UX
 
         private GameObject objectToBound;
 
-        private AppBar appBarInstance;
+        public AppBar appBarInstance;
 
         private GameObject[] rotateHandles;
 
