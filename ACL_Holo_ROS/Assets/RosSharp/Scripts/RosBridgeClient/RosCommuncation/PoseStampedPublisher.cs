@@ -21,7 +21,7 @@ namespace RosSharp.RosBridgeClient
     {
         public Transform PublishedTransform;
         public Transform Origin;
-        private Transform relPos;
+        private Vector3 relPos;
 
         public string FrameId = "unity_world";
 
@@ -31,6 +31,7 @@ namespace RosSharp.RosBridgeClient
         {
             base.Start();
             InitializeMessage();
+            relPos = Vector3.zero;
         }
 
         private void FixedUpdate()
@@ -52,9 +53,9 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            relPos.position = new Vector3(PublishedTransform.position.x - Origin.position.x, PublishedTransform.position.z - Origin.position.z, PublishedTransform.position.y);
+            relPos = new Vector3(PublishedTransform.position.x - Origin.position.x, PublishedTransform.position.z - Origin.position.z, PublishedTransform.position.y);
 
-            message.pose.position = GetGeometryPoint(relPos.position.Unity2Ros());
+            message.pose.position = GetGeometryPoint(relPos.Unity2Ros());
             message.pose.orientation = GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros());
 
             Publish(message);

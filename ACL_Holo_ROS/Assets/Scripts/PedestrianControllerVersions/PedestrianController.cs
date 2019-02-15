@@ -103,10 +103,20 @@ public class PedestrianController : MonoBehaviour
             pedestrians[i].obj.transform.position = pedestrians[i].pose.position+ancManager.Origin.transform.position;   // this position is relative to the origin
             pedestrians[i].obj.transform.rotation = pedestrians[i].pose.rotation;
 
-            if (pedestrians[i].agentType == AgentType.PEDESTRIAN)
+            if (pedestrians[i].agentType == AgentType.PEDESTRIAN )
             {
-                pedestrians[i].m_Animator = pedestrians[i].obj.GetComponent<Animator>();
-                pedestrians[i].m_Animator.speed = base_speed + pedestrians[i].speed * speed_multiplier;     // make the animation speed relative to the speed of the pedestrian
+                if (pedestrians[i].obj.GetComponent<Animator>() != null)
+                {
+                    pedestrians[i].m_Animator = pedestrians[i].obj.GetComponent<Animator>();
+                    pedestrians[i].m_Animator.speed = base_speed + pedestrians[i].speed * speed_multiplier;     // make the animation speed relative to the speed of the pedestrian
+                } else
+                {
+                    foreach (Transform t in transform)
+                    {
+                        if  (t.GetComponent<Animator>() != null)  t.GetComponent<Animator>().speed = base_speed + pedestrians[i].speed * speed_multiplier;
+                    }
+                    Debug.LogError("Prefab has no animator component"); // in the case of the car, the wheels are the ones with animators
+                }
             }
         }
 
