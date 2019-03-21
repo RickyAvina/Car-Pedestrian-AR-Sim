@@ -30,7 +30,9 @@ namespace RosSharp.RosBridgeClient.Messages.Geometry
         {
             get
             {
-                return UnityEngine.Quaternion.Euler(0, -theta*180/Mathf.PI + 90, 0);    // z and y axis are swapped for unity and ROS
+                //Debug.Log(theta*180/Mathf.PI);
+                return UnityEngine.Quaternion.Euler(0, -theta * 180 / Mathf.PI + 90, 0);
+                //return UnityEngine.Quaternion.Euler(0, -theta*180/Mathf.PI + 90, 0);    // z and y axis are swapped for unity and ROS
             }
         }
     }

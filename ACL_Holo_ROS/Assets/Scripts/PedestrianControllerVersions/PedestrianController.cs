@@ -100,8 +100,20 @@ public class PedestrianController : MonoBehaviour
         {
             pedestrians[i].obj = Instantiate(pedestrianPrefab);
             pedestrians[i].obj.transform.localScale = new Vector3(pedestrians[i].radius, pedestrians[i].radius, pedestrians[i].radius);
-            pedestrians[i].obj.transform.position = pedestrians[i].pose.position+ancManager.Origin.transform.position;   // this position is relative to the origin
-            pedestrians[i].obj.transform.rotation = pedestrians[i].pose.rotation;
+            pedestrians[i].obj.transform.parent = ancManager.Origin.transform;  // parent
+            Vector3 res = transform.TransformPoint(pedestrians[i].pose.position * 12.0f);
+            pedestrians[i].obj.transform.localPosition = res;
+
+            Vector3 direction = new Vector3(0, pedestrians[i].pose.theta * 180 / Mathf.PI, 0);
+            //Debug.Log("Before: " + direction);
+            //Vector3 dir = transform.TransformDirection(direction);
+            //Debug.Log("Cube orientation: " + ancManager.Origin.transform.rotation.eulerAngles);
+            //Debug.Log("Incoming direction: " + direction);
+
+            //direction += ancManager.Origin.transform.rotation.eulerAngles;
+            //Debug.Log("After direction: " + direction);
+
+            pedestrians[i].obj.transform.localRotation = Quaternion.Euler(direction);
 
             if (pedestrians[i].agentType == AgentType.PEDESTRIAN )
             {
@@ -134,8 +146,12 @@ public class PedestrianController : MonoBehaviour
         {
             for (int i = 0; i < numPedestrians; i++)
             {
-                pedestrians[i].obj.transform.position = pedestrians[i].pose.position+ancManager.Origin.transform.position;  // move pedestrians relative to the origin
-                pedestrians[i].obj.transform.rotation = pedestrians[i].pose.rotation;
+                Vector3 res = transform.TransformPoint(pedestrians[i].pose.position*12.0f); // transforms local frame into world frame. Apply the same 12.0f const transformation we applied for sending positions.
+                Vector3 direction = new Vector3(0, -pedestrians[i].pose.theta * 180 / Mathf.PI + 90, 0);
+                Vector3 heading = transform.TransformDirection(direction);
+
+                pedestrians[i].obj.transform.localPosition = res;
+                pedestrians[i].obj.transform.localRotation = Quaternion.Euler(heading);
             }
         }
     }

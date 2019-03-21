@@ -418,7 +418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5feb21ebb25baf41a506c04eba2bcb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pedestrianPrefab: {fileID: 1899234095489288, guid: 5434095a5434c2d4486895a6157036ad,
+  pedestrianPrefab: {fileID: 1781763372152776, guid: c10862fa7079f8f4fa2b1575269d2de4,
     type: 2}
   speed_multiplier: 0.5
   base_speed: 1.6

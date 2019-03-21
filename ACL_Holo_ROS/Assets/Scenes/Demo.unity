@@ -237,7 +237,8 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114810213801600200, guid: 5cfba9d7fc695ef4d9690b8f2242eb28, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 5cfba9d7fc695ef4d9690b8f2242eb28, type: 2}
   m_IsPrefabAsset: 0
 --- !u!4 &269452940 stripped
@@ -500,7 +501,6 @@ MonoBehaviour:
   ancManager: {fileID: 1963211877}
   speed_multiplier: 0.5
   base_speed: 1.6
-  speechController: {fileID: 0}
 --- !u!1 &1797731441
 GameObject:
   m_ObjectHideFlags: 0

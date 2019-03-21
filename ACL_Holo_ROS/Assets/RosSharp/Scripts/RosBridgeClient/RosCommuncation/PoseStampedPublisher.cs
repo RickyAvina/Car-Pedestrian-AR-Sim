@@ -34,7 +34,7 @@ namespace RosSharp.RosBridgeClient
             relPos = Vector3.zero;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             UpdateMessage();
         }
@@ -53,12 +53,28 @@ namespace RosSharp.RosBridgeClient
         private void UpdateMessage()
         {
             message.header.Update();
-            relPos = new Vector3(PublishedTransform.position.x - Origin.position.x, PublishedTransform.position.z - Origin.position.z, PublishedTransform.position.y);
+            Vector3 res = Origin.InverseTransformPoint(PublishedTransform.position);
+            res = new Vector3(res.x/12.0f, res.z/12.0f, res.y/12.0f);
 
-            message.pose.position = GetGeometryPoint(relPos.Unity2Ros());
-            message.pose.orientation = GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros());
+            //Vector3 res = new Vector3(-Origin.InverseTransformPoint(PublishedTransform.position).x, Origin.InverseTransformPoint(PublishedTransform.position).y, Origin.InverseTransformPoint(PublishedTransform.position).z);
+            //Debug.Log(res);
+
+            message.pose.position = GetGeometryPoint(res);  // changed from Unity2Ros() we are only changing x and z axis because of our coordinate frame
+            message.pose.orientation = GetGeometryQuaternion(rotationTransformation());
+            //message.pose.orientation = GetGeometryQuaternion(PublishedTransform.rotation.Unity2Ros());
 
             Publish(message);
+        }
+
+        private Quaternion rotationTransformation()
+        {
+            //Vector3 currEuler = new Vector3(PublishedTransform.transform.rotation.x, -PublishedTransform.transform.rotation.z, -PublishedTransform.transform.rotation.y);
+            Quaternion relative = Origin.rotation * PublishedTransform.rotation;
+            relative = new Quaternion(-relative.x, relative.z, -relative.y, relative.w);
+            //Quaternion rotationAmount = Quaternion.Euler(0, 0, 90);
+
+            //return Quaternion.Euler(currEuler);
+            return relative; // switching z and y worked. x is pos
         }
 
         private Messages.Geometry.Point GetGeometryPoint(Vector3 position)

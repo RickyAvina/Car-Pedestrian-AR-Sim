@@ -15,6 +15,8 @@ public class SpeechController : MonoBehaviour, ISpeechHandler
     //public TapToPlace tapToPlace;           // required to know if origin is currently being set
     public GameObject origin;
 
+    private bool mappingFinished = false;
+
     void Start()
     {
         //tapToPlace.OnPlaced += OnPlaced;
@@ -36,9 +38,18 @@ public class SpeechController : MonoBehaviour, ISpeechHandler
             case "start":
                 OriginSet();
                 break;
+            case "reset":
+                Reset();
+                break;
             default:
                 break;
         }
+    }
+
+    void Reset()
+    {
+        origin.transform.position = Camera.main.transform.position;
+        origin.GetComponent<AncManager>().Reset();
     }
 
     void Update()
@@ -65,18 +76,6 @@ public class SpeechController : MonoBehaviour, ISpeechHandler
 
     private void OriginSet()
     {
-        //if (tapToPlace==null)
-        //{
-        //    Debug.LogError("Set TapToPlace!");
-        //    return;
-        //}
-
-        //if (tapToPlace.IsBeingPlaced)
-        //{
-        //    text.text = "Place your origin first before starting";
-        //    return;
-        //}
-
         AttachWorldAnchor();
         OnOriginSet(this, null);
         text.text = "";
@@ -86,17 +85,14 @@ public class SpeechController : MonoBehaviour, ISpeechHandler
 
     private void MappingFinished()
     {
-        OnMappingFinished(this, null);
-        SpatialMappingManager.Instance.DrawVisualMeshes = false;
-        SpatialMappingManager.Instance.StopObserver();  // stop updating the mesh
-
-        //if (tapToPlace == null)
-        //{
-        //    Debug.LogError("Set TapToPlace!");
-        //    return;
-        //}
-
-        text.text = "Click the box to re-configure your origin\n or say 'start' to\nstart the simulation";
+        if (!mappingFinished)
+        {
+            OnMappingFinished(this, null);
+            SpatialMappingManager.Instance.DrawVisualMeshes = false;
+            SpatialMappingManager.Instance.StopObserver();  // stop updating the mesh
+            text.text = "Click the box to re-configure your origin\n or say 'start' to\nstart the simulation";
+            mappingFinished = true;
+        }
 
         // Make planes here
     }
